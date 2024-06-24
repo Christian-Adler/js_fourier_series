@@ -20,6 +20,7 @@ class Fourier {
     const endVector = this.drawFourier(ctx, 0, 0, 1);
 
     ctx.restore();
+    return endVector;
   }
 
   drawFourier(ctx, x, y, counter) {
