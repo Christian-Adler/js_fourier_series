@@ -24,8 +24,8 @@ const updateWorldSettings = () => {
 
 updateWorldSettings();
 
-const fourier = new Fourier(worldWidth2, worldHeight2, 4);
-const series = new Series(worldWidth2 + 150, worldHeight2);
+const fourier = new Fourier(250, worldHeight2, 10, 100);
+const series = new Series(250 + 250, worldHeight2);
 
 const update = () => {
   ctx.fillStyle = "white";
@@ -44,8 +44,8 @@ const update = () => {
 
   ctx.strokeStyle = "red";
   ctx.beginPath();
-  ctx.moveTo(worldWidth2 + actVec.x, worldHeight2 + actVec.y);
-  ctx.lineTo(worldWidth2 + 150, worldHeight2 + actVec.y);
+  ctx.moveTo(250 + actVec.x, worldHeight2 + actVec.y);
+  ctx.lineTo(250 + 250, worldHeight2 + actVec.y);
   ctx.stroke();
 
   updateWorldSettings();

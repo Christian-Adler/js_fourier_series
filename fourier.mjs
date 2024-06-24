@@ -1,17 +1,18 @@
 import {Vector} from "./vector.mjs";
 
 class Fourier {
-  constructor(x, y, n) {
+  constructor(x, y, n, r = 50) {
     this.x = x;
     this.y = y;
     this.n = n;
-    this.r = 50;
+    this.r = r;
     this.actValue = 0;
     this.step = Math.PI / 100;
   }
 
   update() {
     this.actValue += this.step;
+    if (this.actValue >= Math.PI * 2) this.actValue = 0;
   }
 
   draw(ctx) {
@@ -24,16 +25,16 @@ class Fourier {
   }
 
   drawFourier(ctx, x, y, counter) {
-
-    let radius = this.r / counter;
+    const seriesNo = counter * 2 - 1
+    let radius = this.r / seriesNo;
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.stroke();
 
     ctx.beginPath();
     ctx.moveTo(x, y);
-    let yC = y + -radius * Math.sin(this.actValue * counter);
-    let xC = x + radius * Math.cos(this.actValue * counter);
+    let xC = x + radius * Math.cos(this.actValue * seriesNo);
+    let yC = y + radius * Math.sin(this.actValue * seriesNo);
     ctx.lineTo(xC, yC);
     ctx.stroke();
 
