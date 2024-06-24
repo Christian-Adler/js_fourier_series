@@ -26,11 +26,14 @@ class Fourier {
 
   drawFourier(ctx, x, y, counter) {
     const seriesNo = counter * 2 - 1
-    let radius = this.r / seriesNo;
+    let radius = this.r * (4 / Math.PI) / seriesNo;
+
+    ctx.strokeStyle = "rgba(255,255,255,0.2)";
     ctx.beginPath();
     ctx.arc(x, y, radius, 0, Math.PI * 2);
     ctx.stroke();
 
+    ctx.strokeStyle = "rgba(255,255,255,1)";
     ctx.beginPath();
     ctx.moveTo(x, y);
     let xC = x + radius * Math.cos(this.actValue * seriesNo);
@@ -38,9 +41,9 @@ class Fourier {
     ctx.lineTo(xC, yC);
     ctx.stroke();
 
-    ctx.beginPath();
-    ctx.arc(xC, yC, 3, 0, Math.PI * 2);
-    ctx.fill();
+    // ctx.beginPath();
+    // ctx.arc(xC, yC, 3, 0, Math.PI * 2);
+    // ctx.fill();
 
     if (counter >= this.n)
       return new Vector(xC, yC);
