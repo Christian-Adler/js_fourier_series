@@ -18,36 +18,40 @@ class Fourier {
   draw(ctx) {
     ctx.save();
     ctx.translate(this.x, this.y);
-    const endVector = this.drawFourier(ctx, 0, 0, 1);
+    const endVector = this.drawFourier(ctx);
 
     ctx.restore();
     return endVector;
   }
 
-  drawFourier(ctx, x, y, counter) {
-    const seriesNo = counter * 2 - 1
-    let radius = this.r * (4 / Math.PI) / seriesNo;
+  drawFourier(ctx,) {
+    let x = 0;
+    let y = 0;
+    for (let i = 0; i < this.n; i++) {
+      let seriesNo = i * 2 + 1;
 
-    ctx.strokeStyle = "rgba(255,255,255,0.2)";
-    ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
-    ctx.stroke();
+      let radius = this.r * (4 / Math.PI) / seriesNo;
 
-    ctx.strokeStyle = "rgba(255,255,255,1)";
-    ctx.beginPath();
-    ctx.moveTo(x, y);
-    let xC = x + radius * Math.cos(this.actValue * seriesNo);
-    let yC = y + radius * Math.sin(this.actValue * seriesNo);
-    ctx.lineTo(xC, yC);
-    ctx.stroke();
+      ctx.strokeStyle = "rgba(255,255,255,0.2)";
+      ctx.beginPath();
+      ctx.arc(x, y, radius, 0, Math.PI * 2);
+      ctx.stroke();
 
-    // ctx.beginPath();
-    // ctx.arc(xC, yC, 3, 0, Math.PI * 2);
-    // ctx.fill();
+      ctx.strokeStyle = "rgba(255,255,255,1)";
+      ctx.beginPath();
+      ctx.moveTo(x, y);
 
-    if (counter >= this.n)
-      return new Vector(xC, yC);
-    return this.drawFourier(ctx, xC, yC, counter + 1);
+      x += radius * Math.cos(this.actValue * seriesNo);
+      y += radius * Math.sin(this.actValue * seriesNo);
+      ctx.lineTo(x, y);
+      ctx.stroke();
+
+      // ctx.beginPath();
+      // ctx.arc(x, y, 3, 0, Math.PI * 2);
+      // ctx.fill();
+
+    }
+    return new Vector(x, y);
   }
 }
 
