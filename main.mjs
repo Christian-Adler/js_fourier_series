@@ -1,4 +1,4 @@
-import {Fourier} from "./fourier.mjs";
+import {dft, Fourier} from "./fourier.mjs";
 import {Series} from "./series.mjs";
 
 const canvas = document.getElementById("canvas");
@@ -27,6 +27,19 @@ updateWorldSettings();
 const fourier = new Fourier(250, worldHeight2, 10, 100);
 const series = new Series(250 + 250, worldHeight2);
 
+let y = [];
+
+y = [100, 100, 100, -100, -100, -100, 100, 100, 100, -100, -100, -100, 100, 100, 100, -100, -100, -100,];
+
+y = [];
+for (let i = 1; i < 100; i++) {
+  // y.push((Math.random() - 0.5) * 200);
+  y.push(i * 3 - 150);
+
+}
+
+const fourierY = dft(y);
+
 const update = () => {
   ctx.fillStyle = "white";
   ctx.strokeStyle = "white";
@@ -37,7 +50,8 @@ const update = () => {
   ctx.clearRect(0, 0, worldWidth, worldHeight);
 
   fourier.update();
-  const actVec = fourier.draw(ctx);
+  // const actVec = fourier.drawFourier(ctx);
+  const actVec = fourier.drawFourierSeries(ctx, fourierY);
   series.add(actVec);
   series.draw(ctx);
 
