@@ -11,20 +11,16 @@ class Series {
   }
 
   draw(ctx) {
-    ctx.save();
-    ctx.translate(this.x, this.y);
 
     ctx.beginPath();
     for (let i = this.dots.length - 1; i >= 0; i--) {
       const vec = this.dots[i];
       if (i === 0)
-        ctx.moveTo(this.dots.length - i, vec.y);
+        ctx.moveTo(this.x + this.dots.length - i, this.y + vec.y);
       else
-        ctx.lineTo(this.dots.length - i, vec.y);
+        ctx.lineTo(this.x + this.dots.length - i, this.y + vec.y);
     }
     ctx.stroke();
-
-    ctx.restore();
   }
 }
 

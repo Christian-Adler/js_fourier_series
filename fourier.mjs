@@ -1,13 +1,11 @@
 import {Vector} from "./vector.mjs";
 
-const HALF_PI = Math.PI / 2;
-
 class Fourier {
-  constructor(x, y, n, r = 50) {
+  constructor(x, y, r = 50, rotationOffset = 0) {
     this.x = x;
     this.y = y;
-    this.n = n;
     this.r = r;
+    this.rotationOffset = rotationOffset;
     this.actValue = Math.PI * 2;
     this.step = Math.PI / 100;
   }
@@ -17,30 +15,12 @@ class Fourier {
     if (this.actValue >= Math.PI * 2) this.actValue = 0;
   }
 
-  drawFourier(ctx) {
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    const endVector = this.#drawFourier(ctx);
-
-    ctx.restore();
-    return endVector;
-  }
-
-  drawFourierSeries(ctx, fourierY) {
-    ctx.save();
-    ctx.translate(this.x, this.y);
-    const endVector = this.#drawFourierSeries(ctx, fourierY);
-
-    ctx.restore();
-    return endVector;
-  }
-
-  #drawFourier(ctx) {
+  drawFourier(ctx, n = 10) {
     this.step = Math.PI / 100;
 
-    let x = 0;
-    let y = 0;
-    for (let i = 0; i < this.n; i++) {
+    let x = this.x;
+    let y = this.y;
+    for (let i = 0; i < n; i++) {
       let seriesNo = i * 2 + 1;
 
       let radius = this.r * (4 / Math.PI) / seriesNo;
@@ -54,8 +34,8 @@ class Fourier {
       ctx.beginPath();
       ctx.moveTo(x, y);
 
-      x += radius * Math.cos(this.actValue * seriesNo);
-      y += radius * Math.sin(this.actValue * seriesNo);
+      x += radius * Math.cos(this.actValue * seriesNo + this.rotationOffset);
+      y += radius * Math.sin(this.actValue * seriesNo + this.rotationOffset);
       ctx.lineTo(x, y);
       ctx.stroke();
 
@@ -67,10 +47,10 @@ class Fourier {
     return new Vector(x, y);
   }
 
-  #drawFourierSeries(ctx, fourierY) {
+  drawFourierSeries(ctx, fourierY) {
     this.step = Math.PI * 2 / fourierY.length;
-    let x = 0;
-    let y = 0;
+    let x = this.x;
+    let y = this.y;
     for (let i = 0; i < fourierY.length; i++) {
       const fourierYItem = fourierY[i];
 
@@ -87,8 +67,8 @@ class Fourier {
       ctx.beginPath();
       ctx.moveTo(x, y);
 
-      x += radius * Math.cos(this.actValue * freq + phase + HALF_PI);
-      y -= radius * Math.sin(this.actValue * freq + phase + HALF_PI);
+      x += radius * Math.cos(this.actValue * freq + phase + this.rotationOffset);
+      y -= radius * Math.sin(this.actValue * freq + phase + this.rotationOffset);
       ctx.lineTo(x, y);
       ctx.stroke();
 
