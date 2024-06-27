@@ -1,5 +1,6 @@
 import {dft, Fourier} from "./fourier.mjs";
 import {Series} from "./series.mjs";
+import {Vector} from "./vector.mjs";
 import {deg2rad} from "./utils.mjs";
 
 const canvas = document.getElementById("canvas");
@@ -27,15 +28,15 @@ updateWorldSettings();
 
 const HALF_PI = Math.PI / 2;
 
-const fourier = new Fourier(250, worldHeight2, 100, HALF_PI);
-const fourier2 = new Fourier(350, 150, 100);
-const series = new Series(250 + 250, 0);
+const fourierX = new Fourier(550, 150, 100);
+const fourierY = new Fourier(250, worldHeight2, 100, HALF_PI);
+const series = new Series(0, 0);
 
-let y = [];
 let x = [];
+let y = [];
 
 // y = [100, 100, 100, -100, -100, -100, 100, 100, 100, -100, -100, -100, 100, 100, 100, -100, -100, -100,];
-for (let i = 1; i < 100; i++) {
+for (let i = 0; i < 100; i++) {
   // y.push((Math.random() - 0.5) * 200);
 
   // saegezahn
@@ -48,8 +49,11 @@ for (let i = 1; i < 100; i++) {
   y.push(100 * Math.sin(angle));
 }
 
-const fourierY = dft(y);
-const fourierX = dft(x);
+const fourierSeriesX = dft(x);
+const fourierSeriesY = dft(y);
+
+const slowly = true;
+let counter = 0;
 
 const update = () => {
   ctx.fillStyle = "white";
@@ -60,18 +64,34 @@ const update = () => {
   }
   ctx.clearRect(0, 0, worldWidth, worldHeight);
   //
-  fourier.update();
-  fourier2.update();
-  // const actVec = fourier.drawFourier(ctx);
-  const actVec = fourier.drawFourierSeries(ctx, fourierY);
-  fourier2.drawFourierSeries(ctx, fourierY);
-  series.add(actVec);
+  counter++;
+  if (!slowly || counter % 10 === 0) {
+    fourierY.update();
+    fourierX.update();
+    counter = 0;
+  }
+  // const actVecY = fourierY.drawFourier(ctx);
+  const actVecX = fourierX.drawFourierSeries(ctx, fourierSeriesX);
+  const actVecY = fourierY.drawFourierSeries(ctx, fourierSeriesY);
+  // series.add(actVecY);
+  series.add(new Vector(actVecX.x, actVecY.y));
   series.draw(ctx);
+  // series.drawWithOffset(ctx);
 
+  // only one
+  // ctx.strokeStyle = "red";
+  // ctx.beginPath();
+  // ctx.moveTo(actVecY.x, actVecY.y);
+  // ctx.lineTo(250 + 250, actVecY.y);
+  // ctx.stroke();
+
+  // two
   ctx.strokeStyle = "red";
   ctx.beginPath();
-  ctx.moveTo(actVec.x, actVec.y);
-  ctx.lineTo(250 + 250, actVec.y);
+  ctx.moveTo(actVecX.x, actVecX.y);
+  ctx.lineTo(actVecX.x, actVecY.y);
+  ctx.moveTo(actVecY.x, actVecY.y);
+  ctx.lineTo(actVecX.x, actVecY.y);
   ctx.stroke();
 
   updateWorldSettings();

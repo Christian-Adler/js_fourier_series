@@ -12,7 +12,7 @@ class Fourier {
 
   update() {
     this.actValue += this.step;
-    if (this.actValue >= Math.PI * 2) this.actValue = 0;
+    if (this.actValue >= Math.PI * 2) this.actValue %= (Math.PI * 2);
   }
 
   drawFourier(ctx, n = 10) {
@@ -47,12 +47,12 @@ class Fourier {
     return new Vector(x, y);
   }
 
-  drawFourierSeries(ctx, fourierY) {
-    this.step = Math.PI * 2 / fourierY.length;
+  drawFourierSeries(ctx, fourierSeries) {
+    this.step = Math.PI * 2 / fourierSeries.length;
     let x = this.x;
     let y = this.y;
-    for (let i = 0; i < fourierY.length; i++) {
-      const fourierYItem = fourierY[i];
+    for (let i = 0; i < fourierSeries.length; i++) {
+      const fourierYItem = fourierSeries[i];
 
       const freq = fourierYItem.freq;
       const radius = fourierYItem.amp;
