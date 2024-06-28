@@ -36,7 +36,7 @@ const standardFourierSeries = false;
 const HALF_PI = Math.PI / 2;
 
 const fourierX = new Fourier(550, 150, 100);
-const fourierY = new Fourier(250, worldHeight2, 100, HALF_PI);
+const fourierY = new Fourier(150, worldHeight2, 100, HALF_PI);
 const series = new Series(onlyY ? onlyYOffsetX : 0, 0);
 
 let x = [];
@@ -66,10 +66,13 @@ for (let i = 0; i < drawing.length; i += 10) {
 // svg
 const svgPath = document.getElementById('path');
 const svgPathLength = Math.floor(svgPath.getTotalLength());
-for (let i = 0; i <= 100; i++) {
-  const pt = svgPath.getPointAtLength(i * svgPathLength / 100);
-  x.push(Math.round(pt.x));
-  y.push(Math.round(pt.y));
+const svgPathSteps = 1000;
+for (let i = 0; i <= svgPathSteps; i++) {
+  const pt = svgPath.getPointAtLength(i * svgPathLength / svgPathSteps);
+  // x.push(Math.round(pt.x) * 5);
+  // y.push(Math.round(pt.y) * 5);
+  x.push(pt.x * 5);
+  y.push(pt.y * 5);
 }
 
 const fourierSeriesX = dft(x);
@@ -77,6 +80,7 @@ const fourierSeriesY = dft(y);
 
 
 const update = () => {
+
   ctx.fillStyle = "white";
   ctx.strokeStyle = "white";
 
@@ -105,7 +109,7 @@ const update = () => {
     ctx.lineTo(onlyYOffsetX, actVecY.y);
     ctx.stroke();
   } else {
-    series.add(new Vector(actVecX.x, actVecY.y), y.length, true);
+    series.add(new Vector(actVecX.x, actVecY.y), y.length - 50, false);
     series.draw(ctx);
 
     ctx.strokeStyle = "red";
