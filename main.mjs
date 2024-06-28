@@ -1,6 +1,7 @@
 import {dft, Fourier} from "./fourier.mjs";
 import {Series} from "./series.mjs";
 import {Vector} from "./vector.mjs";
+import {drawing} from "./drawing.mjs";
 import {deg2rad} from "./utils.mjs";
 
 const canvas = document.getElementById("canvas");
@@ -26,17 +27,24 @@ const updateWorldSettings = () => {
 
 updateWorldSettings();
 
+const slowly = false;
+let counter = 0;
+const onlyY = false;
+const onlyYOffsetX = 500;
+const standardFourierSeries = false;
+
 const HALF_PI = Math.PI / 2;
 
 const fourierX = new Fourier(550, 150, 100);
 const fourierY = new Fourier(250, worldHeight2, 100, HALF_PI);
-const series = new Series(0, 0);
+const series = new Series(onlyY ? onlyYOffsetX : 0, 0);
 
 let x = [];
 let y = [];
 
 // y = [100, 100, 100, -100, -100, -100, 100, 100, 100, -100, -100, -100, 100, 100, 100, -100, -100, -100,];
 for (let i = 0; i < 100; i++) {
+  // x.push((Math.random() - 0.5) * 200);
   // y.push((Math.random() - 0.5) * 200);
 
   // saegezahn
@@ -45,15 +53,19 @@ for (let i = 0; i < 100; i++) {
 
   // sin / circle
   const angle = deg2rad(i / 100 * 360);
-  x.push(100 * Math.cos(angle));
-  y.push(100 * Math.sin(angle));
+  // x.push(100 * Math.cos(angle));
+  // y.push(100 * Math.sin(angle));
+}
+
+for (let i = 0; i < drawing.length; i += 10) {
+  const drawingElement = drawing[i];
+  x.push(drawingElement.x);
+  y.push(drawingElement.y);
 }
 
 const fourierSeriesX = dft(x);
 const fourierSeriesY = dft(y);
 
-const slowly = true;
-let counter = 0;
 
 const update = () => {
   ctx.fillStyle = "white";
@@ -63,36 +75,47 @@ const update = () => {
     worldUpdated = false;
   }
   ctx.clearRect(0, 0, worldWidth, worldHeight);
+
+  let actVecX;
+  let actVecY;
+  if (standardFourierSeries) {
+    actVecY = fourierY.drawFourier(ctx);
+  } else {
+    if (!onlyY)
+      actVecX = fourierX.drawFourierSeries(ctx, fourierSeriesX);
+    actVecY = fourierY.drawFourierSeries(ctx, fourierSeriesY);
+  }
+
+  if (onlyY) {
+    series.add(actVecY, y.length);
+    series.drawWithOffset(ctx);
+
+    ctx.strokeStyle = "red";
+    ctx.beginPath();
+    ctx.moveTo(actVecY.x, actVecY.y);
+    ctx.lineTo(onlyYOffsetX, actVecY.y);
+    ctx.stroke();
+  } else {
+    series.add(new Vector(actVecX.x, actVecY.y), y.length, true);
+    series.draw(ctx);
+
+    ctx.strokeStyle = "red";
+    ctx.beginPath();
+    ctx.moveTo(actVecX.x, actVecX.y);
+    ctx.lineTo(actVecX.x, actVecY.y);
+    ctx.moveTo(actVecY.x, actVecY.y);
+    ctx.lineTo(actVecX.x, actVecY.y);
+    ctx.stroke();
+  }
+
   //
   counter++;
   if (!slowly || counter % 10 === 0) {
+    if (!onlyY)
+      fourierX.update();
     fourierY.update();
-    fourierX.update();
     counter = 0;
   }
-  // const actVecY = fourierY.drawFourier(ctx);
-  const actVecX = fourierX.drawFourierSeries(ctx, fourierSeriesX);
-  const actVecY = fourierY.drawFourierSeries(ctx, fourierSeriesY);
-  // series.add(actVecY);
-  series.add(new Vector(actVecX.x, actVecY.y));
-  series.draw(ctx);
-  // series.drawWithOffset(ctx);
-
-  // only one
-  // ctx.strokeStyle = "red";
-  // ctx.beginPath();
-  // ctx.moveTo(actVecY.x, actVecY.y);
-  // ctx.lineTo(250 + 250, actVecY.y);
-  // ctx.stroke();
-
-  // two
-  ctx.strokeStyle = "red";
-  ctx.beginPath();
-  ctx.moveTo(actVecX.x, actVecX.y);
-  ctx.lineTo(actVecX.x, actVecY.y);
-  ctx.moveTo(actVecY.x, actVecY.y);
-  ctx.lineTo(actVecX.x, actVecY.y);
-  ctx.stroke();
 
   updateWorldSettings();
 

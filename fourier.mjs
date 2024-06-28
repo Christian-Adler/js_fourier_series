@@ -16,7 +16,7 @@ class Fourier {
   }
 
   drawFourier(ctx, n = 10) {
-    this.step = Math.PI / 100;
+    this.step = Math.PI * 2 / 100;
 
     let x = this.x;
     let y = this.y;
@@ -34,8 +34,8 @@ class Fourier {
       ctx.beginPath();
       ctx.moveTo(x, y);
 
-      x += radius * Math.cos(this.actValue * seriesNo + this.rotationOffset);
-      y += radius * Math.sin(this.actValue * seriesNo + this.rotationOffset);
+      x += radius * Math.cos(this.actValue * seriesNo);
+      y += radius * Math.sin(this.actValue * seriesNo);
       ctx.lineTo(x, y);
       ctx.stroke();
 
@@ -68,7 +68,7 @@ class Fourier {
       ctx.moveTo(x, y);
 
       x += radius * Math.cos(this.actValue * freq + phase + this.rotationOffset);
-      y -= radius * Math.sin(this.actValue * freq + phase + this.rotationOffset);
+      y += radius * Math.sin(this.actValue * freq + phase + this.rotationOffset);
       ctx.lineTo(x, y);
       ctx.stroke();
 

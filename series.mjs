@@ -5,9 +5,19 @@ class Series {
     this.dots = [];
   }
 
-  add(vec) {
+  add(vec, optMaxLen, clearOnMaxLen) {
     this.dots.push(vec);
-    while (this.dots.length > 1000) this.dots.splice(0, 1);
+
+    let maxLen = 1000;
+    if (typeof optMaxLen === 'number' && optMaxLen > 1) {
+      maxLen = optMaxLen;
+    }
+
+    if (clearOnMaxLen && this.dots.length >= maxLen) {
+      this.dots = [];
+    }
+
+    while (this.dots.length > maxLen) this.dots.splice(0, 1);
   }
 
   drawWithOffset(ctx) {
