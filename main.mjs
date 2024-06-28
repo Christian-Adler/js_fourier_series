@@ -78,6 +78,9 @@ for (let i = 0; i <= svgPathSteps; i++) {
 const fourierSeriesX = dft(x);
 const fourierSeriesY = dft(y);
 
+fourierSeriesX.sort((a, b) => b.amp - a.amp);
+fourierSeriesY.sort((a, b) => b.amp - a.amp);
+
 
 const update = () => {
 
