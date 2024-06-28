@@ -59,8 +59,17 @@ for (let i = 0; i < 100; i++) {
 
 for (let i = 0; i < drawing.length; i += 10) {
   const drawingElement = drawing[i];
-  x.push(drawingElement.x);
-  y.push(drawingElement.y);
+  // x.push(drawingElement.x);
+  // y.push(drawingElement.y);
+}
+
+// svg
+const svgPath = document.getElementById('path');
+const svgPathLength = Math.floor(svgPath.getTotalLength());
+for (let i = 0; i <= 100; i++) {
+  const pt = svgPath.getPointAtLength(i * svgPathLength / 100);
+  x.push(Math.round(pt.x));
+  y.push(Math.round(pt.y));
 }
 
 const fourierSeriesX = dft(x);
